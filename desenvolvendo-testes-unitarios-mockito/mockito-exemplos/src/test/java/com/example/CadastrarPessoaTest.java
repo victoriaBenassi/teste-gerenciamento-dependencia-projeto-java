@@ -1,5 +1,6 @@
 package com.example;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 
 @ExtendWith(MockitoExtension.class)
 public class CadastrarPessoaTest {
@@ -23,7 +25,7 @@ public class CadastrarPessoaTest {
     @Test
     void validarDadosDeCadastro(){
         DadosLocalizacao dadosLocalizacao = new DadosLocalizacao("MG","Patos de Minas", "rua 2","apartamento","centro");
-        Mockito.when(apiDosCorreios.buscaDadosComBaseNoCep("99288")).thenReturn(dadosLocalizacao);
+        Mockito.when(apiDosCorreios.buscaDadosComBaseNoCep(anyString())).thenReturn(dadosLocalizacao); //usando o matchers anyString para manipular o retorno
         Pessoa pessoa = cadastrarPessoa.cadastrarPessoa("victoria", "9999999", LocalDate.now(), "99288");
 
 
@@ -35,4 +37,14 @@ public class CadastrarPessoaTest {
 
 
     }
+    @Test
+    void lancarExceptionQuandoChamarApiDosCorreios(){
+
+        Mockito.doThrow(IllegalArgumentException.class)
+                        .when(apiDosCorreios)
+                        .buscaDadosComBaseNoCep(anyString());
+
+        Assertions.assertThrows(IllegalArgumentException.class, ()-> cadastrarPessoa.cadastrarPessoa("victoria", "9999999", LocalDate.now(), "99288"));
+    }
 }
+

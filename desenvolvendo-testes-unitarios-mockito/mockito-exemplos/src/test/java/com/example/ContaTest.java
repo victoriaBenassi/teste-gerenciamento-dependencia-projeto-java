@@ -7,6 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+
 @ExtendWith(MockitoExtension.class)
 public class ContaTest {
 
@@ -26,13 +28,20 @@ public class ContaTest {
     }
 
     @Test
-    void validarQuantidadeDeChamadas(){
+    void validarQuantidadeDeVezesQueMetodosFoiChamado(){
 
         conta.validaSaldo(300);
         conta.validaSaldo(500);
         conta.validaSaldo(600);
 
-        Mockito.verify( conta, Mockito.times(3)).validaSaldo(ArgumentMatchers.anyInt()); // valida quantas vezes o metodo foi chamado
+        Mockito.verify( conta, Mockito.times(3)).validaSaldo(anyInt()); // valida quantas vezes o metodo foi chamado
         //ArgumentMatchers.anyInt() -  verificar se um método foi chamado com qualquer valor para um argumento específico
+    }
+
+    @Test
+    void retornaTrueParaQualquerValorNaValidacaoDeSaldo(){
+        Mockito.doNothing().when(conta).validaSaldo(anyInt());
+        conta.validaSaldo(3_500);
+
     }
 }
